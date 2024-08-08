@@ -1,5 +1,5 @@
 import React from 'react'
-import Swiper from "./Swiper"
+import Swiper from "./Swipercomp"
 function Subjectlist() {
   return (
     <div className=' mt-10   w-full flex  flex-col'>

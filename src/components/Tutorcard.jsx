@@ -2,7 +2,7 @@ import React from 'react'
 import { nitish } from '../assets'
 function Tutorcard() {
   return (
-    <div className="h-auto pb-2 bg-gradient-to-br from-white rounded-xl font-serif via-white to-[#db9887] w-64 ml-14">
+    <div className=" flex flex-col items-center my-4 pb-2 bg-gradient-to-br from-white rounded-xl font-serif via-white to-[#db9887] w-[360px] md:w-auto md:ml-14">
     <div className="">
       <img
         className="w-64 h-64 bg-slate-600 rounded-xl object-cover"
@@ -15,10 +15,11 @@ function Tutorcard() {
         </div>
 
         <p className="text-sm">{"Bhubaneswar (Offline)"}</p>
+        <p>Desc</p>
+        <p>Subject Desc</p>
       </div>
     </div>
-    <p>Desc</p>
-    <p>Subject Desc</p>
+
   </div>
   )
 }
