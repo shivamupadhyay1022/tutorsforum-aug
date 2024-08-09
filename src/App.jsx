@@ -1,26 +1,22 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import Navbar from "./components/Navbar";
-import { nitish } from "./assets";
-import Autocarousel from "./components/Autocarousel";
-import Hero from "./components/Hero";
-import Tutorcard from "./components/Tutorcard";
-import Tutors from "./components/Tutors";
-import Testimonial from "./components/Testimonial";
-import Testsect from "./components/Testsect";
-import Swipercomp from "./components/Swipercomp";
+import "./App.css"
+import { Route, Routes } from "react-router-dom";
+import Signupprof from "./pages/authentication/Signupprof";
+import Home from "./pages/Home";
+import Empty from "./pages/Empty";
+import Selectsub from "./pages/prof/Selectsub";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="overflow-x-hidden" >
-      <Navbar/>
-      <Hero />
-      <Tutors />
-      <Testsect/>
+    <div className="" >
+      <Empty />
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+              <Route exact path="/signup-prof" element={<Signupprof />} />
+              <Route exact path="/addsub" element={<Selectsub />} />
+            </Routes>
     </div>
   );
 }

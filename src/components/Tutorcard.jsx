@@ -19,7 +19,6 @@ function Tutorcard() {
         <p>Subject Desc</p>
       </div>
     </div>
-
   </div>
   )
 }
