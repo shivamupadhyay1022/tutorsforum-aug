@@ -1,9 +1,52 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+import { TutorContext } from "../../Context/Context ";
+import { useNavigate } from "react-router-dom";
+
 
 function Signupprof() {
   const [inputype, setinputype] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const Tcontext = useContext(TutorContext);
+
+  const checkinput = () => {
+    if (
+      email.trim().length == 0 ||
+      password.trim().length == 0 
+    ) {
+      console.log( email, password);
+      toast.error("Fill All Fields", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      onRegister();
+      
+    }
+  };
+
+  const onRegister = () => {
+    Tcontext.SetEmail(email);
+    Tcontext.SetPassword(password);
+    navigate("/addsub")
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    checkinput();
+  };
   return (
     <div className="bg-gradient-to-br from-white h-auto  to-[#ffded5]">
+      <ToastContainer/>
       <div className="flex mx-4 mt-2">
         <p className="text-lg font-semibold text-indigo-950">tutorsforum</p>
       </div>
@@ -53,11 +96,11 @@ function Signupprof() {
                 <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
                 <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
               </svg>
-              <input type="text" className="grow" placeholder="Email" />
+              <input type="text" className="grow" placeholder="Email" onChange={(e)=> setEmail(e.target.value)} />
             </label>
             {/* password */}
             <label className="input input-bordered w-full flex items-center gap-2">
-              <input type={inputype ? "password" :"text"} className="grow" placeholder="password" />
+              <input type={inputype ? "password" :"text"} className="grow" placeholder="password" onChange={(e)=> setPassword(e.target.value)} />
               {inputype ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +122,8 @@ function Signupprof() {
               )}
             </label>
 
-            <button className="btn w-full bg-[#db9887] shadow-lg text-white ">
+            <button className="btn w-full bg-[#db9887] shadow-lg text-white "
+            onClick={(e)=>handleSubmit(e)}>
               SignUp with Email
             </button>
             <p>or</p>
@@ -106,12 +150,12 @@ function Signupprof() {
               Sign Up with Facebook
             </button>
             <div>
-              <span className="text-slate-800">Already Have an account ?</span>
+              <span className="text-slate-800">Already Have an account ?{" "}</span>
               <span className="underline">Signin</span>
             </div>
             <div>
               <span className="text-slate-800">
-                By Signing up you agree to{" "}
+                By Signing up you agree to {" "}
               </span>
               <span className="underline">terms</span>
             </div>
