@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.selected {
+    background-color: #ff4081 !important;
+    color: white;
+}
+
+.event-marked {
+    background-color: #ff4081;
+    color: white;
+}

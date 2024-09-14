@@ -11,6 +11,8 @@ import Selectlang from "./pages/prof/selectlang";
 import { TutorProvider } from "./Context/Context ";
 import Profdash from "./pages/prof/Profdash";
 import { AuthProvider } from "./components/AuthProvider";
+import Schedclass from "./pages/prof/Schedclass";
+import Schedqna from "./pages/prof/Schedqna";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -28,6 +30,8 @@ function App() {
             <Route exact path="/aboutclass" element={<Aboutclass />} />
             <Route exact path="/addlang" element={<Selectlang />} />
             <Route exact path="/profdash" element={<Profdash />} />
+            <Route exact path="/schedule-class" element={<Schedclass/>} />
+            <Route exact path="/schedule-qna" element={<Schedqna/>} />
           </Routes>
         </TutorProvider>
       </AuthProvider>
