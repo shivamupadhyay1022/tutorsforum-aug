@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import Profdashsidenav from "./Profdashsidenav";
+import { AuthContext } from "../AuthProvider";
+import { auth } from "../../firebase";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
 
 function Profdashnav() {
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handlelogout = () => {
+    if (currentUser) {
+      signOut(auth)
+        .then(() => {
+          console.log("logged out");
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
   return (
     <div>
       <div className="navbar bg-base-100 border-b-2 border-slate-300">
@@ -59,7 +79,7 @@ function Profdashnav() {
               <div className="w-10 rounded-full">
                 <img
                   alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  src="https://freerangestock.com/sample/119157/business-man-profile-vector.jpg"
                 />
               </div>
             </div>
@@ -77,7 +97,7 @@ function Profdashnav() {
                 <a>Settings</a>
               </li>
               <li>
-                <a>Logout</a>
+                <a onClick={handlelogout}>Logout</a>
               </li>
             </ul>
           </div>

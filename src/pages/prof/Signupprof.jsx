@@ -31,11 +31,31 @@ function Signupprof() {
     }
   };
 
-  const onRegister = () => {
+  async function onRegister  ()  {
     Tcontext.SetEmail(email);
     Tcontext.SetPassword(password);
     Tcontext.SetName(firstname+lastname);
-    navigate("/addsub");
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        //registered
+        navigate("/addsub");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+        toast.error(errorCode,errorMessage, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+    
   };
 
   const handleSubmit = (e) => {

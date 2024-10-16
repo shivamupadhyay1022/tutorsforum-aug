@@ -15,6 +15,7 @@ import Schedclass from "./pages/prof/Schedclass";
 import Schedqna from "./pages/prof/Schedqna";
 import Selectloc from "./pages/prof/Selectloc";
 import Signinprof from "./pages/prof/Signinprof";
+import TestComp from "./pages/prof/TestComp";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -26,6 +27,7 @@ function App() {
         <TutorProvider>
           <Routes>
             <Route exact path="/" element={<Home />} />
+            <Route exact path="/testcomp" element={<TestComp />} />
             <Route exact path="/signup-prof" element={<Signupprof />} />
             <Route exact path="/signin-prof" element={<Signinprof />} />
             <Route exact path="/addsub" element={<Selectsub />} />

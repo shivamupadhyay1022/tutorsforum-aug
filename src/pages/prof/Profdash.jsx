@@ -10,6 +10,7 @@ import { ref, set } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { supabase } from "../../supabase";
 import { onValue } from "firebase/database";
+import UpdateProfileProf from "../../components/prof/UpdateProfileProf";
 
 function Profdash() {
   const Tcontext = useContext(TutorContext);
@@ -67,11 +68,25 @@ function Profdash() {
         SetSub(data.sub);
         SetAboutclasss(data.aboutclass);
         SetLang(data.lang);
-        setShowDelayedText(false);
       } else {
         console.log("db snapshot invalid");
       }
-    });
+    })
+      .then(() => {
+        setShowDelayedText(false);
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
   };
   const fetchdatasup = async () => {
     const uid = currentUser.uid;
@@ -89,10 +104,10 @@ function Profdash() {
         setLongitude(data[0].longitude);
         setloc(data[0].onloc);
         setonline(data[0].online);
+        setShowDelayedText(false);
       } else {
         console.log("data null");
       }
-      setShowDelayedText(false);
     } catch (error) {
       toast.error(error, {
         position: "top-right",
@@ -109,7 +124,17 @@ function Profdash() {
 
   return (
     <div>
-      {showdelaytext || <div>Loading</div>}
+      {showdelaytext || (
+        <div className="absolute top-[40%] right-[40%] transform -translate-x-1/2 -translate-y-1/2 spinner md:top-1/2 md:left-1/2">
+          {" "}
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      )}
       {!showdelaytext || (
         <div>
           <Profdashnav />
@@ -118,7 +143,7 @@ function Profdash() {
             <div className="card bg-base-100 w-80 shadow-xl">
               <figure>
                 <img
-                  src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                  src="https://freerangestock.com/sample/119157/business-man-profile-vector.jpg"
                   alt="Shoes"
                   className=" w-64 h-64 bg-slate-600 rounded-xl object-cover"
                 />
@@ -202,12 +227,30 @@ function Profdash() {
                     </div>
                   )}
                 </div>
-                <button className="btn" onClick={() => handlelogout()}>
-                  Logout
-                </button>
               </div>
             </div>
           </div>
+          <center>
+            <buttion 
+            className="btn min-w-[230px] my-4 self-center"
+            onClick={()=>document.getElementById('my_modal_4').showModal()}>
+              Edit Profile
+            </buttion>
+          </center>
+          <dialog id="my_modal_4" className="modal">
+          <div className="flex flex-col  items-center modal-box w-auto max-w-5xl">
+                <h1 className=" block text-2xl font-medium text-[#07074D]" >
+                    Update Profle
+                </h1>
+              <UpdateProfileProf/>
+              <div className="modal-action">
+                <form method="dialog">
+                  {/* if there is a button, it will close the modal */}
+                  <button className="btn">Update</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
         </div>
       )}
     </div>

@@ -12,6 +12,7 @@ import { ref, set } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { supabase } from "../../supabase";
 let mylang = [];
+import { AuthContext } from "../../components/AuthProvider";
 
 function removeLanglang() {
   let [eng, setEng] = useState(true);
@@ -34,6 +35,7 @@ function removeLanglang() {
   const [onloc, setloc] = useState(false);
   const auth = getAuth();
 
+  const { currentUser } = useContext(AuthContext);
   const Tcontext = useContext(TutorContext);
 
   const addLang = (language) => {
@@ -167,39 +169,29 @@ function removeLanglang() {
   // }
 
   async function onRegister() {
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        //registered
-        const user = userCredential.user;
-        console.log("Onregister");
-        set(ref(db, "tutors/" + userCredential.user.uid), {
-          email: email,
-          name: name,
-          bio: bio,
-          sub: sub,
-          aboutclass: aboutclass,
-          lang: mylang,
-        }).then(()=>{
-          toast.success(user.email + " Registered", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          navigate("/addloc");
-        }).catch((err)=>{
-          console.log(err);
+    if (currentUser){
+      await set(ref(db, "tutors/" + currentUser.uid), {
+        email: email,
+        name: name,
+        bio: bio,
+        sub: sub,
+        aboutclass: aboutclass,
+        lang: mylang,
+      }).then(()=>{
+        toast.success(user.email + " Registered", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
         });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage);
-        toast.error(errorCode,errorMessage, {
+        navigate("/addloc");
+      }).catch((err)=>{
+        console.log(err);
+        toast.error(err, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -210,6 +202,18 @@ function removeLanglang() {
           theme: "light",
         });
       });
+    }else{
+      toast.error("SignUp Error", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   }
 
   const handleSubmit = (e) => {
