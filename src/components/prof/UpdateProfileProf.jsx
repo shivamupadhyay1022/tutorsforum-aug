@@ -536,6 +536,12 @@ function UpdateProfileProf() {
               />
             </div>
           )}
+          <button
+            className="btn my-2 w-full bg-[#db9887] shadow-lg text-white "
+            onClick={(e) => handleSubmit(e)}
+          >
+            Update
+          </button>
         </div>
       </div>
     </div>

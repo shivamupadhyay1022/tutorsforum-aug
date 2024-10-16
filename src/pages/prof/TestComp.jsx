@@ -68,6 +68,11 @@ function TestComp() {
     console.log(myloc);
   };
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    
+  }
+
   return (
     <div>
       {showdelaytext || (
@@ -664,19 +669,17 @@ function TestComp() {
                       />
                     </div>
                   )}
-
-                  <button
+                </div>
+                <button
                     className="btn my-2 w-full bg-[#db9887] shadow-lg text-white "
                     onClick={(e) => handleSubmit(e)}
                   >
-                    Add Locations
+                    Update
                   </button>
-                </div>
               </div>
                 </div>
-
                 <form method="dialog">
-                  <button className="btn">Close</button>
+                  <button className="btn absolute right-2 top-2">X</button>
                 </form>
               </div>
             </div>
