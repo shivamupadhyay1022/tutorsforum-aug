@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase.jsx";
 
-export const AuthContext = React.createContext();
-
-export const AuthProvider = ({ children }) => {
+ const AuthContext = React.createContext();
+ const getUser = () =>{
+  return currentUser;
+}
+   const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -17,6 +19,8 @@ export const AuthProvider = ({ children }) => {
     });
     // console.log(currentUser);
   }, [currentUser]);
+  
+
 
   return (
     <AuthContext.Provider value={{ currentUser }}>
@@ -24,3 +28,9 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export {
+  AuthContext,
+  AuthProvider,
+  getUser,
+}

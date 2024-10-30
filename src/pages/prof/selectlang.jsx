@@ -77,96 +77,6 @@ function removeLanglang() {
     }
   };
 
-  // function onSignin() {
-  //   signInWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //       // Signed in
-  //       const user = userCredential.user;
-  //       console.log(user);
-  //       toast.success(user.email + " signed in", {
-  //         position: "top-right",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //       });
-  //         navigate("/addloc");
-  //     })
-  //     .catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-  //       console.log(errorCode);
-  //       toast.error(errorCode, {
-  //         position: "top-right",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //       });
-  //     });
-  // }
-
-  // const handleSubmit2 = (e) => {
-  //   e.preventDefault();
-  //   onSignin();
-  // };
-
-  // async function onUpload() {
-  //   console.log("onupload");
-  //   try {
-  //     await onAuthStateChanged(auth, (user) => {
-  //       if (user) {
-  //         const uid = user.uid;
-  //         const { data, error2 } = supabase
-  //           .from("tutors")
-  //           .insert({
-  //             uid: uid,
-  //             email: email,
-  //             name: name,
-  //             lang: mylang,
-  //             statename: statename,
-  //             cityname: cityname,
-  //             longitude: longitude,
-  //             latitude: latitude,
-  //             online: `${online ? "true" : "false"}`,
-  //             onloc: `${onloc ? "true" : "false"}`,
-  //           });
-  //         if (error2) {
-  //           toast.error(error2, {
-  //             position: "top-right",
-  //             autoClose: 5000,
-  //             hideProgressBar: false,
-  //             closeOnClick: true,
-  //             pauseOnHover: true,
-  //             draggable: true,
-  //             progress: undefined,
-  //             theme: "light",
-  //           });
-  //         }
-  //       } else {
-  //         toast.error("SQL Error", {
-  //           position: "top-right",
-  //           autoClose: 5000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //           theme: "light",
-  //         });
-  //       }
-  //     });
-  //     navigate("/profdash");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 
   async function onRegister() {
     if (currentUser){
@@ -178,7 +88,7 @@ function removeLanglang() {
         aboutclass: aboutclass,
         lang: mylang,
       }).then(()=>{
-        toast.success(user.email + " Registered", {
+        toast.success(currentUser.email + " Registered", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -223,7 +133,7 @@ function removeLanglang() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-white  to-[#ffded5]">
+    <div className="">
       <ToastContainer />
       <div className="flex mx-4 mt-2">
         <p className="text-lg font-semibold text-indigo-950">tutorsforum</p>

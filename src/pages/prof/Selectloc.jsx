@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -27,9 +27,8 @@ function Selectloc() {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
 
-  const [email,SetEmail] = useState("_");
-  const [name,SetName] = useState("_");
-
+  const [email, SetEmail] = useState("_");
+  const [name, SetName] = useState("_");
 
   const addloc = (language) => {
     myloc.push(language);
@@ -59,65 +58,66 @@ function Selectloc() {
   };
 
   const onRegister = () => {
-    if(currentUser){
-      console.log(currentUser.uid)
-      console.log(email,name)
-        const uid = currentUser.uid;
-        const { data, error } = supabase
-          .from("tutors")
-          .insert({
-            uid: uid,
-            email: email,
-            name: name,
-            statename: statename,
-            cityname: cityname,
-            longitude: longitude,
-            latitude: latitude,
-            online: `${online ? "true" : "false"}`,
-            onloc: `${onloc ? "true" : "false"}`,
-          })
-          .then(()=>{
-            console.log("success");
-            navigate("/profdash")
-          }).catch((err)=>{
-            console.log(err);
-          });
-        if (error) {
-          console.log(error)
-          toast.error(error, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+    if (currentUser) {
+      console.log(currentUser.uid);
+      console.log(email, name);
+      const uid = currentUser.uid;
+      const { data, error } = supabase
+        .from("tutors")
+        .insert({
+          uid: uid,
+          email: email,
+          name: name,
+          statename: statename,
+          cityname: cityname,
+          longitude: longitude,
+          latitude: latitude,
+          online: `${online ? "true" : "false"}`,
+          onloc: `${onloc ? "true" : "false"}`,
+        })
+        .then(() => {
+          console.log("success");
+          navigate("/profdash");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      if (error) {
+        console.log(error);
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
-    }else{
-      console.log("user not regitered on db")
+    } else {
+      console.log("user not regitered on db");
     }
     // navigate("/profdash");
   };
 
   useEffect(() => {
     fetchdata();
-  },[currentUser]);
+  }, [currentUser]);
 
   const fetchdata = async () => {
-    const starCountRef = ref(db, "tutors/" + currentUser.uid);
+    const starCountRef = ref(db, "tutors/" + currentUser?.uid);
     await onValue(starCountRef, (snapshot) => {
       if (snapshot.exists()) {
         var data = snapshot.val();
         // console.log(data)
         SetName(data.name);
         SetEmail(data.email);
-      }else{
-        console.log("db snapshot invalid")
+      } else {
+        console.log("db snapshot invalid");
       }
-    }); 
-};
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -126,7 +126,7 @@ function Selectloc() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-white  to-[#ffded5]">
+    <div className="">
       <ToastContainer />
       <div className="flex mx-4 mt-2">
         <p className="text-lg font-semibold text-indigo-950">tutorsforum</p>
@@ -135,18 +135,23 @@ function Selectloc() {
         <div className="flex flex-col md:flex-row items-center justify-center mx-8 md:space-x-8 mt-8 md:mx-[18vw] xl:mx-[24vw]">
           {/* left  */}
           <div className="flex flex-col space-y-6 items-start justify-start bg-[#ffded5] px-4 py-6 rounded-xl">
+            {" "}
             <p className="text-2xl font-serif text-indigo-900 font-semibold">
-              Choose language you would like to teach in
-            </p>
+              {" "}
+              Choose your preferred teaching location{" "}
+            </p>{" "}
             <p className="text-lg font-medium">
-              Ready to inspire and earn? Choose your favorite language from our
-              extensive list and start making a difference today!
-            </p>
+              {" "}
+              Ready to make a difference from anywhere? Select the teaching
+              location that suits your lifestyle and start your journey today!{" "}
+            </p>{" "}
             <p className="text-lg font-medium">
-              Whether it’s English, Hindi or odia, there's a place for you. Pick
-              your passion and join us in shaping futures—your teaching journey
-              awaits!
-            </p>
+              {" "}
+              Whether you prefer the flexibility of online teaching or the
+              connection of in-person classes, the choice is yours. Pick the
+              setting that inspires you and begin shaping futures—your teaching
+              adventure is just a step away!{" "}
+            </p>{" "}
           </div>
 
           {/* right */}

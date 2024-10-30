@@ -50,6 +50,8 @@ function Profdash() {
   const [online, setonline] = useState(false);
   const [onloc, setloc] = useState(false);
   const [showdelaytext, setShowDelayedText] = useState(false);
+  const [file, setFile] = useState();
+  const [dbfile, SetDbFile] = useState();
 
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -59,14 +61,14 @@ function Profdash() {
       setShowDelayedText(true);
     }, 2000);
     fetchdata();
+    setShowDelayedText(true);
     setTimeout(() => {
-      setShowDelayedText(true);
     }, 2000);
     fetchdatasup();
   }, [currentUser]);
 
   const fetchdata = async () => {
-    const starCountRef = ref(db, "tutors/" + currentUser.uid);
+    const starCountRef = ref(db, "tutors/" + currentUser?.uid);
     await onValue(starCountRef, (snapshot) => {
       if (snapshot.exists()) {
         var data = snapshot.val();
@@ -75,57 +77,53 @@ function Profdash() {
         SetEmail(data.email);
         SetBio(data.bio);
         SetSub(data.sub);
+        if(data.profilepic){
+          SetDbFile(data.profilepic)
+        }
         myArray = data.sub.map((i) => {
           return i;
         });
-        if (myArray.includes("Maths")) {
-          setSelectMaths(false);
-        }
-        if (myArray.includes("Chemistry")) {
-          setSelectChem(false);
-        }
-        if (myArray.includes("Bio")) {
-          setSelectBio(false);
-        }
-        if (myArray.includes("Physics")) {
-          setSelectPhysics(false);
-        }
+
         mylang = data.lang.map((i) => {
           return i;
         });
-        if (mylang.includes("Hindi")) {
-          setHindi(false);
-        }
-        if (mylang.includes("English")) {
-          setEng(false);
-        }
-        if (mylang.includes("Odia")) {
-          setOdia(false);
-        }
+
         SetAboutclasss(data.aboutclass);
         SetLang(data.lang);
       } else {
         console.log("db snapshot invalid");
       }
-    })
-      .then(() => {
-        setShowDelayedText(false);
-      })
-      .catch((error) => {
-        toast.error(error, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      });
+    });
+    await assign();
+    setShowDelayedText(false);
   };
+  async function assign() {
+    if (myArray.includes("Maths")) {
+      setSelectMaths(false);
+    }
+    if (myArray.includes("Chemistry")) {
+      setSelectChem(false);
+    }
+    if (myArray.includes("Bio")) {
+      setSelectBio(false);
+    }
+    if (myArray.includes("Physics")) {
+      setSelectPhysics(false);
+    }
+    if (mylang.includes("Hindi")) {
+      setHindi(false);
+    }
+    if (mylang.includes("English")) {
+      setEng(false);
+    }
+    if (mylang.includes("Odia")) {
+      setOdia(false);
+    }
+  }
+
   const fetchdatasup = async () => {
-    const uid = currentUser.uid;
+    const uid = currentUser?.uid;
+    console.log(uid)
     try {
       const { data, error } = await supabase
         .from("tutors")
@@ -166,7 +164,7 @@ function Profdash() {
 
   async function updatefb(e) {
     e.preventDefault();
-    const uid = currentUser.uid;
+    const uid = currentUser?.uid;
     if (currentUser) {
       await update(ref(db, "tutors/" + uid), {
         email: email,
@@ -217,7 +215,7 @@ function Profdash() {
 
   async function updatesb(e) {
     e.preventDefault();
-    const uid = currentUser.uid;
+    const uid = currentUser?.uid;
     if (currentUser) {
       const { data, error } = await supabase
         .from("tutors")
@@ -299,6 +297,68 @@ function Profdash() {
     console.log(myloc);
   };
 
+  function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  }
+  const onUpload = async (e) => {
+    const base64 = await convertToBase64(e.target.files[0]);
+    setFile(base64);
+  };
+
+  async function uploadphoto() {
+    if (currentUser) {
+      await update(ref(db, "tutors/" + currentUser.uid), {
+        profilepic: file,
+      })
+        .then(() => {
+          toast.success(currentUser.email + "Profile Pic updated", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        });
+    } else {
+      toast.error("Upload Error", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }
   return (
     <div>
       {showdelaytext || (
@@ -316,14 +376,38 @@ function Profdash() {
         <div>
           <Profdashnav />
           <ToastContainer className="z-[500]" />
-          <div className="flex w-full justify-between p-5 items-center md:px-20 flex-col gap-4 md:flex-row ">
+          <div className="flex w-full h-auto justify-between p-5 items-center md:px-20 flex-col gap-4 md:flex-row ">
             {/* left  */}
-            <div className="card bg-base-100 w-80 shadow-xl">
+            <div className="card bg-base-100 h-[550px] w-80 shadow-xl">
+              <button
+                onClick={() =>
+                  document.getElementById("my_modal_2").showModal()
+                }
+                className="absolute right-8 btn top-[270px]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6 "
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                  />
+                </svg>
+              </button>
               <figure>
                 <img
-                  src="https://freerangestock.com/sample/119157/business-man-profile-vector.jpg"
+                  src={
+                    dbfile ||
+                    "https://freerangestock.com/sample/119157/business-man-profile-vector.jpg"
+                  }
                   alt="Shoes"
-                  className=" w-64 h-64 bg-slate-600 rounded-xl object-cover"
+                  className="  w-64 h-64 mt-10 bg-slate-600 rounded-xl object-cover"
                 />
               </figure>
               <div className="card-body">
@@ -405,24 +489,24 @@ function Profdash() {
                     </div>
                   )}
                 </div>
-                <buttion
+                <button
                   className="btn w-full self-center"
                   onClick={() =>
                     document.getElementById("my_modal_1").showModal()
                   }
                 >
                   Edit location
-                </buttion>
+                </button>
               </div>
             </div>
           </div>
           <center>
-            <buttion
+            <button
               className="btn min-w-[230px] my-4 self-center"
               onClick={() => document.getElementById("my_modal_4").showModal()}
             >
               Edit Profile
-            </buttion>
+            </button>
           </center>
           {/* update firebase */}
           <dialog id="my_modal_4" className="modal">
@@ -947,6 +1031,48 @@ function Profdash() {
                 </div>
               </div>
               <div className="modal-action">
+                <form method="dialog">
+                  <button className="btn absolute right-2 top-2">X</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+
+          <dialog id="my_modal_2" className="modal">
+            <div className="flex flex-col  items-center modal-box w-auto max-w-5xl">
+              <h1 className=" block text-2xl font-medium text-[#07074D]">
+                Update Profle
+              </h1>
+              <div className="modal-action flex-col items-center justify-center">
+                {/* if there is a button, it will close the modal */}
+                <div className="flex flex-col justify-center items-center">
+                  <label className="form-control items-center w-full max-w-xs">
+                    <img
+                      src={
+                        file ||
+                        "https://freerangestock.com/sample/119157/business-man-profile-vector.jpg"
+                      }
+                      className="w-64 h-64 object-cover rounded-lg"
+                    />
+                    <div className="label">
+                      <span className="label-text">Pick an Image</span>
+                    </div>
+                    <input
+                      type="file"
+                      className="file-input file-input-bordered w-full max-w-xs"
+                      onChange={onUpload}
+                    />
+                      <div className="label">
+    <span className="label-text-alt">File Size less than 100 KB</span>
+  </div>
+                  </label>
+                  <button
+                    className="btn w-full mt-5 self-center"
+                    onClick={uploadphoto}
+                  >
+                    Upload Photo
+                  </button>
+                </div>
                 <form method="dialog">
                   <button className="btn absolute right-2 top-2">X</button>
                 </form>

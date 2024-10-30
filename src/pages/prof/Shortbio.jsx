@@ -42,7 +42,7 @@ function Shortbio() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-white  to-[#ffded5]">
+    <div className="">
       <ToastContainer/>
       <div className="flex mx-4 mt-2 mb-16">
         <p className="text-lg font-semibold text-indigo-950">tutorsforum</p>

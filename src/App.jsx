@@ -16,12 +16,15 @@ import Schedqna from "./pages/prof/Schedqna";
 import Selectloc from "./pages/prof/Selectloc";
 import Signinprof from "./pages/prof/Signinprof";
 import TestComp from "./pages/prof/TestComp";
+import Forgetpassword from "./pages/prof/Forgetpassword";
+import Signupuser from "./pages/user/Signupuser";
+import Userdash from "./pages/user/Userdash";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="">
+    <div className="bg-gradient-to-br from-white min-h-screen  to-[#ffded5]">
       <AuthProvider>
         <Empty />
         <TutorProvider>
@@ -30,6 +33,7 @@ function App() {
             <Route exact path="/testcomp" element={<TestComp />} />
             <Route exact path="/signup-prof" element={<Signupprof />} />
             <Route exact path="/signin-prof" element={<Signinprof />} />
+            <Route exact path="/forgot" element={<Forgetpassword/>} />
             <Route exact path="/addsub" element={<Selectsub />} />
             <Route exact path="/shortbio" element={<Shortbio />} />
             <Route exact path="/aboutclass" element={<Aboutclass />} />
@@ -38,6 +42,9 @@ function App() {
             <Route exact path="/schedule-class" element={<Schedclass/>} />
             <Route exact path="/schedule-qna" element={<Schedqna/>} />
             <Route exact path="/addloc" element={<Selectloc/>} />
+            {/* user side */}
+            <Route exact path="/signup-user" element={<Signupuser/>} />
+            <Route exact path="/userdash" element={<Userdash/>} />
           </Routes>
         </TutorProvider>
       </AuthProvider>

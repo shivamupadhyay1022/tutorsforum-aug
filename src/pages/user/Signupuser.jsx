@@ -2,17 +2,15 @@ import React, { useContext, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import { TutorContext } from "../../Context/Context ";
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { auth, googleprovider } from "../../firebase";
 import { onValue } from "firebase/database";
 import { db } from "../../firebase";
 import { ref } from "firebase/database";
-function Signupprof() {
+
+function Signupuser() {
   const [inputype, setinputype] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,56 +18,6 @@ function Signupprof() {
   const [lastname, setLastname] = useState("");
   const navigate = useNavigate();
   const Tcontext = useContext(TutorContext);
-
-  const checkinput = () => {
-    if (email.trim().length == 0 || password.trim().length == 0) {
-      console.log(email, password);
-      toast.error("Fill All Fields", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } else {
-      onRegister();
-    }
-  };
-
-  async function onRegister  ()  {
-    Tcontext.SetEmail(email);
-    Tcontext.SetPassword(password);
-    Tcontext.SetName(firstname+lastname);
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        //registered
-        navigate("/addsub");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage);
-        toast.error(errorCode,errorMessage, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      });
-    
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    checkinput();
-  };
 
   async function signingoogle() {
     signInWithPopup(auth, googleprovider)
@@ -79,7 +27,7 @@ function Signupprof() {
         console.log(Tcontext.email, data.user.email);
         const starCountRef = ref(db, "tutors/" + data.user.uid);
 
-        fetchforgoogle(starCountRef)
+        fetchforgoogle(starCountRef);
       })
       .catch((error) => {
         toast.error(error, {
@@ -94,9 +42,9 @@ function Signupprof() {
         });
       });
   }
-  
+
   async function fetchforgoogle(uri) {
-    console.log(Tcontext.email,"Inside")
+    console.log(Tcontext.email, "Inside");
     await onValue(uri, (snapshot) => {
       if (snapshot.exists()) {
         navigate("/profdash");
@@ -105,6 +53,7 @@ function Signupprof() {
       }
     });
   }
+
   return (
     <div className="">
       <ToastContainer />
@@ -112,89 +61,13 @@ function Signupprof() {
         <p className="text-lg font-semibold text-indigo-950">tutorsforum</p>
       </div>
       <div className="flex flex-col md:flex-row items-center justify-center mx-8 md:space-x-8 mt-16 md:mx-[18vw] xl:mx-[24vw]">
-        {/* left  */}
-        <div className="flex flex-col space-y-6 items-start justify-start">
-          <p className="text-2xl font-serif text-indigo-900 font-semibold">
-            Looking for online tutoring jobs? Your search ends with TutorsForum!
-          </p>
-          <p className="text-lg font-medium">
-            Join India’s top platform for online tutoring and start teaching
-            from the comfort of your home. Whether you're a beginner or
-            experienced, TutorsForum offers opportunities for everyone to share
-            and gain knowledge.
-          </p>
-          <p className="text-lg font-medium hidden md:block">
-            🌟 Plan Your At-Home Tutoring Schedule - Become a tutor on your
-            terms.
-          </p>
-          <p className="text-lg font-medium hidden md:block">
-            🎓 Teach 1000+ Subjects Online - From academics to hobbies, the
-            choice is yours.
-          </p>
 
-          <p className="text-lg font-medium hidden md:block">
-            💰 Earn ₹500+ per Hour - Start earning from home with flexible
-            hours. No registration fees, no commissions.
-          </p>
-          <p className="text-lg font-medium">
-            {" "}
-            Sign up today on TutorsForum and begin your tutoring journey!
-          </p>
-        </div>
 
         {/* right */}
         <div className="flex flex-col justify-center items-center my-8">
           <div className="flex px-12 py-16 flex-col justify-center items-center space-y-4 shadow-xl bg-[#ffded5] rounded-xl">
-            <p className="text-2xl font-semibold">Create Your Profile</p>
-            <div className="flex-col space-y-2">
-              {/* First Name  */}
-              <label className="input rounded input-bordered flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                  />
-                </svg>
+            <p className="text-2xl font-semibold">Sign In</p>
 
-                <input
-                  type="text"
-                  className="grow"
-                  placeholder="first name"
-                  onChange={(e) => setFirstname(e.target.value)}
-                />
-              </label>
-              {/* last name  */}
-              <label className="input rounded input-bordered flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                  />
-                </svg>
-                <input
-                  type="text"
-                  className="grow"
-                  placeholder="last name"
-                  onChange={(e) => setLastname(e.target.value)}
-                />
-              </label>
-            </div>
             {/* email  */}
             <label className="input rounded input-bordered flex items-center gap-2">
               <svg
@@ -246,7 +119,7 @@ function Signupprof() {
               className="btn w-full bg-[#db9887] shadow-lg text-white "
               onClick={(e) => handleSubmit(e)}
             >
-              SignUp with Email
+              SignIn with Email
             </button>
             <p>or</p>
             <button className="btn w-full" onClick={signingoogle}>
@@ -258,11 +131,19 @@ function Signupprof() {
               >
                 <path d="M3.06364 7.50914C4.70909 4.24092 8.09084 2 12 2C14.6954 2 16.959 2.99095 18.6909 4.60455L15.8227 7.47274C14.7864 6.48185 13.4681 5.97727 12 5.97727C9.39542 5.97727 7.19084 7.73637 6.40455 10.1C6.2045 10.7 6.09086 11.3409 6.09086 12C6.09086 12.6591 6.2045 13.3 6.40455 13.9C7.19084 16.2636 9.39542 18.0227 12 18.0227C13.3454 18.0227 14.4909 17.6682 15.3864 17.0682C16.4454 16.3591 17.15 15.3 17.3818 14.05H12V10.1818H21.4181C21.5364 10.8363 21.6 11.5182 21.6 12.2273C21.6 15.2727 20.5091 17.8363 18.6181 19.5773C16.9636 21.1046 14.7 22 12 22C8.09084 22 4.70909 19.7591 3.06364 16.4909C2.38638 15.1409 2 13.6136 2 12C2 10.3864 2.38638 8.85911 3.06364 7.50914Z"></path>
               </svg>
-              Sign Up with Google
+              Sign In with Google
             </button>
             <div>
-              <span className="text-slate-800">Already Have an account ? </span>
-              <Link to={"/signin-prof"}><span className="underline">SignIn</span></Link>
+              <span className="text-slate-800">Don't Have an account ? </span>
+              <Link to={"/signup-prof"}>
+                <span className="underline">SignUp</span>
+              </Link>
+            </div>
+            <div>
+              <span className="text-slate-800">Forgot Password ?</span>
+              <Link to={"/forgot"}>
+                <span className="underline"> Click here</span>
+              </Link>
             </div>
             <div>
               <span className="text-slate-800">
@@ -272,25 +153,9 @@ function Signupprof() {
             </div>
           </div>
         </div>
-
-        <div className="flex flex-col space-y-4 md:hidden mb-4 space-">
-          <p className="text-lg font-medium ">
-            🌟 Plan Your At-Home Tutoring Schedule - Become a tutor on your
-            terms.
-          </p>
-          <p className="text-lg font-medium ">
-            🎓 Teach 1000+ Subjects Online - From academics to hobbies, the
-            choice is yours.
-          </p>
-
-          <p className="text-lg font-medium">
-            💰 Earn ₹500+ per Hour - Start earning from home with flexible
-            hours. No registration fees.
-          </p>
-        </div>
       </div>
     </div>
   );
 }
 
-export default Signupprof;
+export default Signupuser;
