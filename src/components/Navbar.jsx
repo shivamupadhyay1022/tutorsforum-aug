@@ -5,16 +5,22 @@ import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { TutorContext } from "../Context/Context ";
 import { Link } from "react-router-dom";
+import { signInWithPopup } from "firebase/auth";
+import { googleprovider } from "../firebase";
+import { toast } from "react-toastify";
+import { db } from "../firebase";
+import { ref, set,get,child } from "firebase/database";
 
 function Navbar() {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
 
   const [inputype, setinputype] = useState(true);
-  const [email, setEmail] = useState("");
+  const [email, SetEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
+  const [name, SetName] = useState("");
   const [togglesignup, setToggleSignUp] = useState(false);
   const Tcontext = useContext(TutorContext);
 
@@ -47,8 +53,14 @@ function Navbar() {
       onSignIn();
     }
   };
+
   const checkinputregister = () => {
-    if (email.trim().length == 0 || password.trim().length == 0 || firstname.trim() == 0 || lastname.trim() == 0) {
+    if (
+      email.trim().length == 0 ||
+      password.trim().length == 0 ||
+      firstname.trim() == 0 ||
+      lastname.trim() == 0
+    ) {
       console.log(email, password);
       toast.error("Fill All Fields", {
         position: "top-right",
@@ -108,32 +120,34 @@ function Navbar() {
       .then((userCredential) => {
         set(ref(db, "users/" + currentUser.uid), {
           email: email,
-          name: firstname+lastname,
-        }).then(()=>{
-          toast.success(currentUser.email + " Registered", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
+          name: firstname + lastname,
+        })
+          .then(() => {
+            toast.success(currentUser.email + " Registered", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            navigate("/userdash");
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error(err, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
           });
-          navigate("/userdash");
-        }).catch((err)=>{
-          console.log(err);
-          toast.error(err, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -155,12 +169,12 @@ function Navbar() {
   async function signingoogle() {
     signInWithPopup(auth, googleprovider)
       .then((data) => {
-        Tcontext.SetEmail(data.user.email);
-        Tcontext.SetName(data.user.displayName);
-        console.log(Tcontext.email, data.user.email);
+        SetEmail(data.user.email);
+        SetName(data.user.displayName);
+        console.log(data.user.uid, data.user.email);
         const starCountRef = ref(db, "users/" + data.user.uid);
-
-        fetchforgoogle(starCountRef);
+        fetchforgoogle(data.user.uid);
+        console.log("before inside");
       })
       .catch((error) => {
         toast.error(error, {
@@ -177,44 +191,51 @@ function Navbar() {
   }
 
   async function fetchforgoogle(uri) {
-    console.log(Tcontext.email, "Inside");
-    await onValue(uri, (snapshot) => {
-      if (snapshot.exists()) {
-        navigate("/userdash");
-      } else {
-        set(ref(db, "users/" + currentUser.uid), {
-          email: email,
-          name: firstname+lastname,
-        }).then(()=>{
-          toast.success(currentUser.email + " Registered", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+    console.log("Inside");
+    const dbRef = ref(db);
+    get(child(dbRef, `users/${uri}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("Inside if");
           navigate("/userdash");
-        }).catch((err)=>{
-          console.log(err);
-          toast.error(err, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        });
-      }
-    });
+        } else {
+          set(ref(db, "users/" + uri), {
+            email: email,
+            name: name,
+          })
+            .then(() => {
+              toast.success(email + " Registered", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              console.log("Inside else");
+              navigate("/userdash");
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error(err, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
-
-
 
   return (
     <div className="flex  flex-row justify-between px-6 py-4 border-b-2 border-white rounded-xl text-lg">
@@ -224,7 +245,7 @@ function Navbar() {
         {currentUser ? (
           <button
             onClick={() => {
-              navigate("/profdash");
+              navigate("/userdash");
             }}
           >
             Dashboard
@@ -355,7 +376,13 @@ function Navbar() {
                 SignUp with Email
               </button>
               <p>or</p>
-              <button className="btn w-full" onClick={signingoogle}>
+              <button
+                className="btn w-full"
+                onClick={(e) => {
+                  e.preventDefault;
+                  signingoogle();
+                }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -423,7 +450,7 @@ function Navbar() {
                   type="text"
                   className="grow"
                   placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => SetEmail(e.target.value)}
                 />
               </label>
               {/* password */}

@@ -11,7 +11,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { supabase } from "../../supabase";
 import { onValue } from "firebase/database";
 import UpdateProfileProf from "../../components/prof/UpdateProfileProf";
-
+import "react-toastify/dist/ReactToastify.css";
 import {
   CitySelect,
   CountrySelect,

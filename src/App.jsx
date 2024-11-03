@@ -19,6 +19,8 @@ import TestComp from "./pages/prof/TestComp";
 import Forgetpassword from "./pages/prof/Forgetpassword";
 import Signupuser from "./pages/user/Signupuser";
 import Userdash from "./pages/user/Userdash";
+import Requesttutor from "./pages/user/Requesttutor";
+import Usermsg from "./pages/user/Usermsg";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -45,6 +47,8 @@ function App() {
             {/* user side */}
             <Route exact path="/signup-user" element={<Signupuser/>} />
             <Route exact path="/userdash" element={<Userdash/>} />
+            <Route exact path="/reqtutor" element={<Requesttutor/>} />
+            <Route exact path="/usermsg" element={<Usermsg/>} />
           </Routes>
         </TutorProvider>
       </AuthProvider>
