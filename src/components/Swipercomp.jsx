@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Virtual, Navigation, Pagination } from "swiper/modules";
+import { Virtual, Navigation, Pagination, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Testimonial from "./Testimonial";
 
@@ -118,9 +118,13 @@ export default function Swipercomp() {
   return (
     <>
       <Swiper
-        modules={[Virtual, Navigation, Pagination]}
+        modules={[Virtual,Autoplay, Navigation, Pagination]}
         onSwiper={setSwiperRef}
         slidesPerView={width>500 ? 5: 3 }
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
         spaceBetween={1}
         navigation={true}
         virtual
