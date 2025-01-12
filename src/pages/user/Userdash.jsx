@@ -62,6 +62,9 @@ function Userdash() {
         SetLongitude(data.longitude);
         SetCityname(data.cityname);
       }
+      else {
+        navigate("/profdash");
+      }
     });
     setShowDelayedText(false);
   };

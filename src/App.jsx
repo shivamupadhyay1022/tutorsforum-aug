@@ -21,6 +21,9 @@ import Signupuser from "./pages/user/Signupuser";
 import Userdash from "./pages/user/Userdash";
 import Requesttutor from "./pages/user/Requesttutor";
 import Usermsg from "./pages/user/Usermsg";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Tutor from "./pages/prof/Tutor";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -30,6 +33,7 @@ function App() {
       <AuthProvider>
         <Empty />
         <TutorProvider>
+        <ToastContainer/>
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/testcomp" element={<TestComp />} />
@@ -41,6 +45,7 @@ function App() {
             <Route exact path="/aboutclass" element={<Aboutclass />} />
             <Route exact path="/addlang" element={<Selectlang />} />
             <Route exact path="/profdash" element={<Profdash />} />
+            <Route exact path="/tutor/:id" element={<Tutor />} />
             <Route exact path="/schedule-class" element={<Schedclass/>} />
             <Route exact path="/schedule-qna" element={<Schedqna/>} />
             <Route exact path="/addloc" element={<Selectloc/>} />

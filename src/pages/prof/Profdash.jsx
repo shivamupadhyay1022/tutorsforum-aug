@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useLayoutEffect } from "react";
 import Profdashnav from "../../components/prof/Profdashnav";
 import { AuthContext } from "../../components/AuthProvider";
 import { signOut } from "firebase/auth";
@@ -56,14 +56,13 @@ function Profdash() {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTimeout(() => {
       setShowDelayedText(true);
     }, 2000);
     fetchdata();
     setShowDelayedText(true);
-    setTimeout(() => {
-    }, 2000);
+    setTimeout(() => {}, 2000);
     fetchdatasup();
   }, [currentUser]);
 
@@ -77,8 +76,8 @@ function Profdash() {
         SetEmail(data.email);
         SetBio(data.bio);
         SetSub(data.sub);
-        if(data.profilepic){
-          SetDbFile(data.profilepic)
+        if (data.profilepic) {
+          SetDbFile(data.profilepic);
         }
         myArray = data.sub.map((i) => {
           return i;
@@ -123,13 +122,23 @@ function Profdash() {
 
   const fetchdatasup = async () => {
     const uid = currentUser?.uid;
-    console.log(uid)
+    console.log(uid);
     try {
       const { data, error } = await supabase
         .from("tutors")
         .select("*")
         .like("uid", "%" + uid + "%");
-      if (error) throw error;
+      if (error)
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       if (data != null) {
         console.log(data);
         setstatename(data[0].statename);
@@ -165,7 +174,42 @@ function Profdash() {
   async function updatefb(e) {
     e.preventDefault();
     const uid = currentUser?.uid;
+    
     if (currentUser) {
+      // update name supabase
+      const { data, error } = await supabase
+        .from("tutors")
+        .update({
+          name: name,
+        })
+        .match({ uid: uid })
+        .then(() => {
+          toast.success(email + " Updated", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        });
+
+        // update firebase
       await update(ref(db, "tutors/" + uid), {
         email: email,
         name: name,
@@ -378,7 +422,7 @@ function Profdash() {
           <ToastContainer className="z-[500]" />
           <div className="flex w-full h-auto justify-between p-5 items-center md:px-20 flex-col gap-4 md:flex-row ">
             {/* left  */}
-            <div className="card bg-base-100 h-[550px] w-80 shadow-xl">
+            <div className="card bg-base-100 h-auto w-80 shadow-xl">
               <button
                 onClick={() =>
                   document.getElementById("my_modal_2").showModal()
@@ -424,16 +468,16 @@ function Profdash() {
                   {bio || "Bio Bio Bio Bio Bio Bio Bio Bio Bio Bio Bio Bio"}
                 </p>
                 <div className="card-actions justify-end">
-                  {!sub.includes("Maths") || (
+                  {!sub?.includes("Maths") || (
                     <div className="badge badge-outline">{"Maths"}</div>
                   )}
-                  {!sub.includes("Physics") || (
+                  {!sub?.includes("Physics") || (
                     <div className="badge badge-outline">{"Physics"}</div>
                   )}
-                  {!sub.includes("Chemistry") || (
+                  {!sub?.includes("Chemistry") || (
                     <div className="badge badge-outline">{"Chemistry"}</div>
                   )}
-                  {!sub.includes("Bio") || (
+                  {!sub?.includes("Bio") || (
                     <div className="badge badge-outline">{"Bio"}</div>
                   )}
                 </div>
@@ -451,13 +495,13 @@ function Profdash() {
                   <div className="card-actions justify-end">
                     <div className="flex items-center space-x-2">
                       <p className="font-semibold">Languages:</p>
-                      {!lang.includes("English") || (
+                      {!lang?.includes("English") || (
                         <div className="badge badge-outline">{"English"}</div>
                       )}
-                      {!lang.includes("Hindi") || (
+                      {!lang?.includes("Hindi") || (
                         <div className="badge badge-outline">{"Hindi"}</div>
                       )}
-                      {!lang.includes("Odia") || (
+                      {!lang?.includes("Odia") || (
                         <div className="badge badge-outline">{"Odia"}</div>
                       )}
                     </div>
@@ -1062,9 +1106,11 @@ function Profdash() {
                       className="file-input file-input-bordered w-full max-w-xs"
                       onChange={onUpload}
                     />
-                      <div className="label">
-    <span className="label-text-alt">File Size less than 100 KB</span>
-  </div>
+                    <div className="label">
+                      <span className="label-text-alt">
+                        File Size less than 100 KB
+                      </span>
+                    </div>
                   </label>
                   <button
                     className="btn w-full mt-5 self-center"
